@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class Inversions {
 
     // Return the number of inversions in the permutation a[].
@@ -18,22 +16,37 @@ public class Inversions {
 
     // Return a permutation of length n with exactly k inversions.
     public static int[] generate(int n, long k) {
-        int[] permutedArray = new int[n];
+        int m = (int) k;
+
+        int[] currentArray = new int[n];
+        int[] resultArray = new int[n];
+
         for (int i = 0; i < n; i++) {
-            permutedArray[i] = i;
-        }
-        Random rnd = new Random();
-        long permutations = 0;
-        while (permutations != k) {
-            int i = rnd.nextInt(n-1);
-            int temp = permutedArray[i];
-            permutedArray[i] = permutedArray[i+1];
-            permutedArray[i+1] = temp;
-            permutations = count(permutedArray);
+            currentArray[i] = i;
         }
 
-        return permutedArray;
+        int currentInversions = 0;
+        for (int i = n - 1; i > 0; i--) {
+            if (currentInversions + i <= m) {
+                resultArray[n - 1- i] = currentArray[i];
+                currentInversions += i;
+            } else {
+                int lastPosition = m - currentInversions;
+                resultArray[n - 1 - lastPosition] = currentArray[i];
+                break;
+            }
+        }
+        int number = 0;
+        for (int i = 0; i < n; i++) {
+            if (resultArray[i] == 0) {
+                resultArray[i] = number;
+                number++;
+            }
+        }
+
+        return resultArray;
     }
+
     // Takes an integer n and a long k as command-line arguments,
     // and prints a permutation of length n with exactly k inversions.
     public static void main(String[] args) {
