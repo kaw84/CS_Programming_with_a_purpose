@@ -53,15 +53,10 @@ public class Huntingtons {
 
     // Sample client (see below).
     public static void main(String[] args) {
-        String nucleotides[] = StdIn.readAllLines();
-        StringBuilder sb = new StringBuilder(nucleotides[0]);
-        int arrayLength = nucleotides.length;
-        for (int i = 1; i < arrayLength - 1; i++) {
-            sb.append(nucleotides[i]);
-        }
-        String dna = sb.toString();
+        String dna = StdIn.readString();
         removeWhitespace(dna);
         int repeats = maxRepeats(dna);
-        diagnose(repeats);
+        System.out.println(repeats);
+        System.out.println(diagnose(repeats));
     }
 }
