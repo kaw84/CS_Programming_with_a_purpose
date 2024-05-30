@@ -1,3 +1,4 @@
+
 public class Huntingtons {
 
     // Returns the maximum number of consecutive repeats of CAG in the DNA string.
@@ -51,10 +52,9 @@ public class Huntingtons {
         return diagnosis;
     }
 
-    // Sample client (see below).
     public static void main(String[] args) {
-        String dna = StdIn.readString();
-        removeWhitespace(dna);
+        String dna = StdIn.readAll();
+        dna = removeWhitespace(dna);
         int repeats = maxRepeats(dna);
         System.out.println(repeats);
         System.out.println(diagnose(repeats));
