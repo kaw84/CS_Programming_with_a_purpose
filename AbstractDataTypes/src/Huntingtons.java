@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Huntingtons {
 
@@ -53,9 +56,32 @@ public class Huntingtons {
     }
 
     public static void main(String[] args) {
-        String dna = StdIn.readAll();
-        dna = removeWhitespace(dna);
-        int repeats = maxRepeats(dna);
+        if (args.length != 1) {
+            System.err.println("Usage: java Huntingtons <filename>");
+            return;
+        }
+
+        String filename = args[0];
+        StringBuilder dna = new StringBuilder();
+
+        // Read the file and build the DNA sequence
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dna.append(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+
+        // Remove whitespace from the DNA sequence
+        String dnaSequence = removeWhitespace(dna.toString());
+
+        // Calculate the maximum number of repeats
+        int repeats = maxRepeats(dnaSequence);
+
+        // Print the number of repeats and the diagnosis
         System.out.println(repeats);
         System.out.println(diagnose(repeats));
     }
