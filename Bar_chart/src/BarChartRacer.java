@@ -1,71 +1,74 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BarChartRacer {
     public static void main(String[] args) {
-        String filename = args[0]; // Adjust the path to your data file
+        String filename = args[0]; // Filename from the command line argument
+        int k = Integer.parseInt(args[1]); // Number of bars to display
 
-        // Read the entire input from file
+        // Open the input file
         In in = new In(filename);
-        List<String> lines = new ArrayList<>();
-        while (!in.isEmpty()) {
-            lines.add(in.readLine());
-        }
-        String[] inputLines = lines.toArray(new String[0]);
 
-        // Initialize variables to store title, x-axis label, and source
-        String title = inputLines[0];
-        String xAxisLabel = inputLines[1];
-        String source = inputLines[2];
+        // Read title, x-axis label, and source
+        String title = in.readLine();
+        String xAxisLabel = in.readLine();
+        String source = in.readLine();
 
-        // Create an empty list to hold all the data records
-        List<BarChart> charts = new ArrayList<>();
+        // Create a single BarChart object
+        BarChart chart = new BarChart(title, xAxisLabel, source);
 
-        // Process each year's data
-        int index = 3; // Start from the line after source
-        while (index < inputLines.length) {
-            String line = inputLines[index++].trim();
+        // Enable double buffering for smoother animation
+        StdDraw.setCanvasSize(1000, 700);
+        StdDraw.enableDoubleBuffering();
+
+        // Process the input file line by line
+        while (in.hasNextLine()) {
+            String line = in.readLine();
             if (line.isEmpty()) {
-                continue; // Skip empty lines
+                continue;
             }
 
             // Read number of records for this year
             int numberOfRecords = Integer.parseInt(line);
 
-            // Create a new BarChart instance for each year
-            BarChart chart = new BarChart(title, xAxisLabel, source);
+            // List to store the bars
+            List<Bar> bars = new ArrayList<>();
 
             // Process each record for the current year
+            String year = "";
             for (int i = 0; i < numberOfRecords; i++) {
-                String recordLine = inputLines[index++].trim();
-                String[] parts = recordLine.split(",");
-
-                int year = Integer.parseInt(parts[0].trim());
+                line = in.readLine();
+                String[] parts = line.split(",");
+                year = parts[0].trim(); // Capture the year from the first record
                 String name = parts[1].trim();
-                String country = parts[2].trim();
-                int population = Integer.parseInt(parts[3].trim());
+                int value = Integer.parseInt(parts[3].trim());
                 String category = parts[4].trim();
 
-                // Create a Bar instance and add it to the chart
-                Bar bar = new Bar(name, population, category);
+                // Add the bar to the list
+                bars.add(new Bar(name, value, category));
+            }
+
+            // Sort the bars in descending order of value
+            Collections.sort(bars, Collections.reverseOrder());
+
+            // Reset the chart for the new year
+            chart.reset();
+
+            // Add top k bars to the chart
+            for (int i = 0; i < Math.min(k, bars.size()); i++) {
+                Bar bar = bars.get(i);
                 chart.add(bar.getName(), bar.getValue(), bar.getCategory());
             }
 
             // Set the caption for the chart to the current year
-            chart.setCaption("Year " + (charts.size() + 1500)); // Index starts from 0
+            chart.setCaption(year);
 
-            // Add the created chart to the list
-            charts.add(chart);
-        }
-
-        // Display the charts one by one
-        for (BarChart chart : charts) {
-            StdDraw.setCanvasSize(1000, 700);
-            StdDraw.enableDoubleBuffering();
+            // Draw the chart
+            StdDraw.clear();
             chart.draw();
             StdDraw.show();
-            StdDraw.pause(100); // Short pause between frames
-            StdDraw.clear();
+            StdDraw.pause(100); // Pause to control animation speed
         }
     }
 }

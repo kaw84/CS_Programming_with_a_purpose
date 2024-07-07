@@ -57,6 +57,5 @@ public class Bar implements Comparable<Bar> {
 
         System.out.println(bar1.compareTo(bar2)); // Should print a negative number
         System.out.println(bar2.compareTo(bar3)); // Should print a positive number
-        System.out.println(bar1.compareTo(bar1)); // Should print 0
     }
 }
